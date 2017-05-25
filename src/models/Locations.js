@@ -3,9 +3,21 @@ var m = require("mithril");
 var Locations = {
   locations: [],
 
-  fetchAllLocations(data){
+  fetchLocations(data){
+    m.request({
+      method: 'GET',
+      url: 'http://localhost:3000/api/'+data,
+      withCredential: true
+    })
+    .then(function(result){
+      Locations.locations = result;
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+
     //remember business...
-    Locations.locations=[
+    /*Locations.locations=[
     {
       "id": "nu-lounge-bar-bologna",
       "name": "Nu Lounge Bar",
@@ -136,23 +148,10 @@ var Locations = {
       "display_phone": "+39 051 006 5939",
       "distance": 144.1609596246
     }];
+*/
 
-    /*
-    m.request({
-      method: 'GET',
-      url: 'https://api.yelp.com/v3/businesses/search?categories=bars&location='+data,
-      headers: {
-        "Authorization": "Bearer xNNTvPy6O-4oKNr2AribVWj-6UWifupIprP0UzjxSN3M3_-VCKtFZ1MzxRkYdbEAx9Xv8H8RBHjaIXFeQi05pZgArgznYV0mblOZ3vjz3hUvA050oIoSOx-a5YTrWHYx",
-      },
-      withCredential: true
-    })
-    .then(function(result){
-      console.log(result);
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-    */
+
+
   }
 };
 module.exports = Locations;

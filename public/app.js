@@ -40,8 +40,9 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
@@ -51,7 +52,6 @@
 	
 	var Layout = __webpack_require__(/*! ./components/Layout */ 5);
 	var Homepage = __webpack_require__(/*! ./components/Homepage */ 6);
-	var PostsShow = __webpack_require__(/*! ./components/PostsShow */ 10);
 	
 	m.route(document.body, "/", {
 	    "/": {
@@ -68,7 +68,8 @@
 
 
 /***/ },
-/* 1 */
+
+/***/ 1:
 /*!******************************!*\
   !*** ./~/mithril/mithril.js ***!
   \******************************/
@@ -1304,7 +1305,8 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/~/timers-browserify/main.js */ 2).setImmediate, (function() { return this; }()), __webpack_require__(/*! ./../../../../../../../../usr/local/lib/~/webpack/buildin/module.js */ 4)(module)))
 
 /***/ },
-/* 2 */
+
+/***/ 2:
 /*!*********************************************!*\
   !*** (webpack)/~/timers-browserify/main.js ***!
   \*********************************************/
@@ -1389,7 +1391,8 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/~/timers-browserify/main.js */ 2).setImmediate, __webpack_require__(/*! (webpack)/~/timers-browserify/main.js */ 2).clearImmediate))
 
 /***/ },
-/* 3 */
+
+/***/ 3:
 /*!**************************************!*\
   !*** (webpack)/~/process/browser.js ***!
   \**************************************/
@@ -1578,7 +1581,8 @@
 
 
 /***/ },
-/* 4 */
+
+/***/ 4:
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
@@ -1597,32 +1601,48 @@
 
 
 /***/ },
-/* 5 */
+
+/***/ 5:
 /*!**********************************!*\
   !*** ./src/components/Layout.js ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var m = __webpack_require__(/*! mithril */ 1);
+	var User = __webpack_require__(/*! ../models/User */ 40);
 	
-	module.exports = {
+	var Layout = {
+	  handleClick: function(){
+	    User.toggleAuthentication();
+	  },
+	
+	  renderSignIn: function(){
+	    return User.authenticated ? "Sign Out" : "Sign In";
+	  },
+	
 	  view: function(vnode){
 	    return m('div',[
 	      m("nav.navbar.navbar-light", [
 	        m("a.navbar-brand[href='/']", {oncreate: m.route.link}, "Home"),
 	        m("ul.nav.navbar-nav.pull-right",[
-	          m("a.navbar-item[href='#']", {oncreate: m.route.link}, "Sign in"),
-	          m("a.navbar-item[href='#']", {oncreate: m.route.link}, "Sign out"),
+	          m("li.btn.btn-success", {
+	            //oncreate: m.route.link,
+	            onclick: Layout.handleClick
+	          }, Layout.renderSignIn()),
+	          //m("a.navbar-item[href='#']", {oncreate: m.route.link}, "Sign out"),
 	        ])
 	      ]),
 	      m("section", vnode.children)
 	    ]);
 	  }
-	}
+	};
+	
+	module.exports = Layout;
 
 
 /***/ },
-/* 6 */
+
+/***/ 6:
 /*!************************************!*\
   !*** ./src/components/Homepage.js ***!
   \************************************/
@@ -1646,7 +1666,8 @@
 
 
 /***/ },
-/* 7 */
+
+/***/ 7:
 /*!*******************************************!*\
   !*** ./src/components/SearchComponent.js ***!
   \*******************************************/
@@ -1661,7 +1682,7 @@
 	  handleSubmit: function(e){
 	    e.preventDefault();
 	    console.log("submit: ", SearchComponent.data);
-	    Locations.fetchAllLocations(SearchComponent.data);
+	    Locations.fetchLocations(SearchComponent.data);
 	  },
 	
 	  view: function(vnode){
@@ -1681,7 +1702,8 @@
 
 
 /***/ },
-/* 8 */
+
+/***/ 8:
 /*!*********************************!*\
   !*** ./src/models/Locations.js ***!
   \*********************************/
@@ -1692,9 +1714,21 @@
 	var Locations = {
 	  locations: [],
 	
-	  fetchAllLocations(data){
+	  fetchLocations(data){
+	    m.request({
+	      method: 'GET',
+	      url: 'http://localhost:3000/api/'+data,
+	      withCredential: true
+	    })
+	    .then(function(result){
+	      Locations.locations = result;
+	    })
+	    .catch(function(error){
+	      console.log(error);
+	    });
+	
 	    //remember business...
-	    Locations.locations=[
+	    /*Locations.locations=[
 	    {
 	      "id": "nu-lounge-bar-bologna",
 	      "name": "Nu Lounge Bar",
@@ -1825,23 +1859,10 @@
 	      "display_phone": "+39 051 006 5939",
 	      "distance": 144.1609596246
 	    }];
+	*/
 	
-	    /*
-	    m.request({
-	      method: 'GET',
-	      url: 'https://api.yelp.com/v3/businesses/search?categories=bars&location='+data,
-	      headers: {
-	        "Authorization": "Bearer xNNTvPy6O-4oKNr2AribVWj-6UWifupIprP0UzjxSN3M3_-VCKtFZ1MzxRkYdbEAx9Xv8H8RBHjaIXFeQi05pZgArgznYV0mblOZ3vjz3hUvA050oIoSOx-a5YTrWHYx",
-	      },
-	      withCredential: true
-	    })
-	    .then(function(result){
-	      console.log(result);
-	    })
-	    .catch(function(error){
-	      console.log(error);
-	    });
-	    */
+	
+	
 	  }
 	};
 	module.exports = Locations;
@@ -1861,7 +1882,8 @@
 
 
 /***/ },
-/* 9 */
+
+/***/ 9:
 /*!*****************************************!*\
   !*** ./src/components/ListComponent.js ***!
   \*****************************************/
@@ -1870,27 +1892,46 @@
 	var m = __webpack_require__(/*! mithril */ 1);
 	
 	var Locations = __webpack_require__(/*! ../models/Locations */ 8);
+	var User = __webpack_require__(/*! ../models/User */ 40);
 	
 	var ListComponent = {
 	
+	  handleClick: function(id){
+	    if(User.authenticated){
+	      User.toggleLocation(id);
+	    }
+	    else{
+	      console.log("Autenticati, aldamar!");
+	    }
+	  },
+	
+	  renderGoing(id){
+	    if(User.locations.indexOf(id) === -1)
+	      return "0 going";
+	    else {
+	      return "1 going";
+	    }
+	  },
+	
 	  view: function(vnode){
 	    const locations = Locations.locations;
-	    console.log(locations)
+	
 	    return m("div.list-group",[
 	      locations.map(function(item){
 	        return m("a.list-group-item.list-group-item-action.flex-column.align-items-start",[
 	          m("img.col-xs-4[src="+item.image_url+"][height=100]"),
 	          m("div.d-flex.w-100.justify-content-between", [
 	            m("h5.mb-1", item.name),
-	            m("button.btn.btn-primary","... going")
+	            m("button.btn.btn-primary", {
+	              onclick: m.withAttr("value", ListComponent.handleClick),
+	              value: item.id
+	            }, ListComponent.renderGoing(item.id))
 	          ]),
-	          m("p.mb-1", "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit."),
-	          m("small", "tel: "+item.display_phone),
-	          m("small", "| rating: "+item.rating),
-	          m("small", "| price: "+item.price),
+	          m("p.mb-1", "tel: "+item.display_phone+"| rating: "+item.rating+"| price: "+item.price)
 	        ]);
 	      })
 	    ]);
+	    return m('div','ciao');
 	  }
 	
 	  /*
@@ -1909,23 +1950,73 @@
 
 
 /***/ },
-/* 10 */
-/*!*************************************!*\
-  !*** ./src/components/PostsShow.js ***!
-  \*************************************/
+
+/***/ 40:
+/*!****************************!*\
+  !*** ./src/models/User.js ***!
+  \****************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var m = __webpack_require__(/*! mithril */ 1);
 	
-	var PostsShow = {
-	  view: function(vnode){
-	    return m("div","PostShow"+vnode.attrs.id);
-	  }
+	var User = {
+	  name: '',
+	  authenticated: false,
+	  locations: [],
 	
-	}
-	module.exports = PostsShow;
+	  toggleLocation: function(id){
+	    if(User.authenticated){
+	      m.request({
+	        method: "POST",
+	        url: "http://localhost:3000/api/auth/"+id,
+	        headers: {
+	          "Authentication": localStorage.getItem("token")
+	        }
+	      })
+	      .then(function(){
+	        const index = User.locations.indexOf(id);
+	        if(index === -1)
+	          User.locations.push(id);
+	        else {
+	          User.locations.splice(index, 1);
+	        }
+	      });
+	    }
+	  },
+	
+	  fetchLocations(){
+	    m.request({
+	      method: "GET",
+	      url: "http://localhost:3000/api/user/"+User.name,
+	      headers: {
+	        "Authentication": localStorage.getItem("token")
+	      }
+	    })
+	    .then(function(result){
+	      console.log("Eccole qui: ");
+	      console.log(result);
+	      User.locations = result.locations;
+	    })
+	  },
+	
+	  toggleAuthentication(){
+	    console.log(User.authenticated);
+	    User.authenticated = !User.authenticated;
+	    if(User.authenticated){
+	      User.name = '123456'
+	      localStorage.setItem('token', User.name);
+	      User.fetchLocations();
+	    }
+	    else{
+	      localStorage.removeItem('token');
+	    }
+	  }
+	};
+	
+	module.exports = User;
 
 
 /***/ }
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=app.js.map

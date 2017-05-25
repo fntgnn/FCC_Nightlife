@@ -1,4 +1,4 @@
-### Express + Mithril Generator
+### Nightlife coordination app
 * server: npm run start
 * client: npm run client
 

@@ -7,7 +7,7 @@ var SearchComponent = {
   handleSubmit: function(e){
     e.preventDefault();
     console.log("submit: ", SearchComponent.data);
-    Locations.fetchAllLocations(SearchComponent.data);
+    Locations.fetchLocations(SearchComponent.data);
   },
 
   view: function(vnode){
